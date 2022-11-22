@@ -1,0 +1,15 @@
+[package]
+name = "xa-rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+jsonrpc-http-server = "15.0"
+libuv = "2.5.0"
+log = "0.4.17"
+log4rs = "0.12.0"
+pcap-parser = "0.14.0"
+rustop = "1.1.2"
+yaml-rust = "0.4"
