@@ -1,5 +1,4 @@
 mod args;
-mod evt;
 mod logger;
 mod rpc;
 mod yaml;
@@ -20,10 +19,6 @@ fn main() {
     println!("listen-port: {}", options.rpc_port);
 
     info!("Hello, world!");
-
-    let mut event_loop = EventLoop::new().unwrap();
-    let timeout = event_loop.timeout_ms(123, 300).unwrap();
-    let _ = event_loop.run(&mut MyHandler);
 
     let server = rpc::new_server(options.rpc_address.as_str(), options.rpc_port, options.rpc_allow_cors);
     server.wait();
