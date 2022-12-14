@@ -23,12 +23,12 @@ pub fn load_from_file(path: &str) -> Options {
     let doc = &docs[0];
 
     Options {
-        debug_level: doc["debug"]["level"].as_i64().unwrap(),
+        debug_level: doc["debug"]["level"].as_i64().unwrap_or(1),
         prefix_path: String::from(doc["paths"]["prefix"].as_str().unwrap()),
 
-        rpc_enabled: doc["control"]["enabled"].as_bool().unwrap(),
-        rpc_allow_cors: doc["control"]["allow-cors"].as_bool().unwrap(),
-        rpc_address: String::from(doc["control"]["listen-address"].as_str().unwrap()),
+        rpc_enabled: doc["control"]["enabled"].as_bool().unwrap_or(false),
+        rpc_allow_cors: doc["control"]["allow-cors"].as_bool().unwrap_or(false),
+        rpc_address: String::from(doc["control"]["listen-address"].as_str().unwrap_or("127.0.0.1")),
         rpc_port: doc["control"]["listen-port"].as_i64().unwrap() as u16,
     }
 }
