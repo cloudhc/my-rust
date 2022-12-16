@@ -23,7 +23,7 @@ paths:
 
 # Save/load settings from helper program
 settings:
-  enabled: false
+  enabled: true
   database: mysql://xadmin:netargos12345@127.0.0.1:3306/apca_dev
 
 # RPC for control and search
