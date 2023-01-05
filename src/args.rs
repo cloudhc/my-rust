@@ -7,13 +7,19 @@ pub struct Args {
     pub number: i64
 }
 
-pub fn parse_args() -> Args {
-    let (args, _) = opts! {
-        opt config:String;
-    }.parse_or_exit();
+impl Args {
+    pub fn build() -> Result<Args, &'static str> {
+        let (args, _) = opts! {
+            opt config:Option<String>;
+        }.parse_or_exit();
 
-    Args {
-        config: args.config,
-        number: 1
+        if args.config.is_none() {
+            return Err("Usage: xa-rust -c etc/main.yaml");
+        }
+
+        Ok(Args {
+            config: args.config.unwrap(),
+            number: 1
+        })
     }
 }

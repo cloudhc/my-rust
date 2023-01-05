@@ -15,15 +15,15 @@ pub fn load_dbsettings(uri: &str) -> std::result::Result<(), Box<dyn std::error:
     let pool = Pool::new(uri)?;
     let mut conn = pool.get_conn()?;
 
-    let fetched_dbsettings = conn
+    let port_list = conn
         .query_map(
             "SELECT port_1, port_2, port_3, port_4 FROM config_port_speed",
             |(port_1, port_2, port_3, port_4)| {
-               Setting { port_1, port_2, port_3, port_4 }
+                Setting { port_1, port_2, port_3, port_4 }
             },
         )?;
 
-    println!("{:?}", fetched_dbsettings);
+    println!("{:?}", port_list);
 
     Ok(())
 }

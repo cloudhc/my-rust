@@ -1,7 +1,7 @@
 extern crate yaml_rust;
 
-use std::fs::File;
-use std::io::prelude::*;
+use std::error::Error;
+use std::fs;
 use yaml_rust::YamlLoader;
 
 pub struct Config {
@@ -17,24 +17,28 @@ pub struct Config {
     pub rpc_port: u16,
 }
 
-pub fn load_from_file(path: &str) -> Config {
-    let mut f = File::open(path).expect("Error while openig file");
-    let mut contents = String::new();
-    f.read_to_string(&mut contents).expect("Something went wrong while reading the file");
+impl Config {
+    pub fn load_from_file(path: &str) -> Result<Config, Box<dyn Error>>  {
+        let contents = fs::read_to_string(path)?;
 
-    let docs = YamlLoader::load_from_str(&mut contents).unwrap();
-    let doc = &docs[0];
+        let root_docs = match YamlLoader::load_from_str(&contents) {
+            Ok(docs) => docs,
+            Err(e) => return Err(Box::new(e)),
+        };
 
-    Config {
-        debug_level: doc["debug"]["level"].as_i64().unwrap_or(1),
-        prefix_path: String::from(doc["paths"]["prefix"].as_str().unwrap_or("/opt/xabyss/css")),
+        let docs = &root_docs[0];
 
-        settings_enabled: doc["settings"]["enabled"].as_bool().unwrap_or(false),
-        settings_uri: String::from(doc["settings"]["database"].as_str().unwrap()),
+        Ok(Config {
+            debug_level: docs["debug"]["level"].as_i64().unwrap_or(1),
+            prefix_path: String::from(docs["paths"]["prefix"].as_str().unwrap_or("/opt/xabyss/css")),
 
-        rpc_enabled: doc["control"]["enabled"].as_bool().unwrap_or(false),
-        rpc_allow_cors: doc["control"]["allow-cors"].as_bool().unwrap_or(false),
-        rpc_address: String::from(doc["control"]["listen-address"].as_str().unwrap_or("127.0.0.1")),
-        rpc_port: doc["control"]["listen-port"].as_i64().unwrap() as u16,
+            settings_enabled: docs["settings"]["enabled"].as_bool().unwrap_or(false),
+            settings_uri: String::from(docs["settings"]["database"].as_str().unwrap()),
+
+            rpc_enabled: docs["control"]["enabled"].as_bool().unwrap_or(false),
+            rpc_allow_cors: docs["control"]["allow-cors"].as_bool().unwrap_or(false),
+            rpc_address: String::from(docs["control"]["listen-address"].as_str().unwrap_or("127.0.0.1")),
+            rpc_port: docs["control"]["listen-port"].as_i64().unwrap() as u16,
+        })
     }
 }

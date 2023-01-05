@@ -4,9 +4,19 @@ mod logger;
 mod rpc;
 mod yaml;
 
+use std::process;
+use crate::args::Args;
+use crate::yaml::Config;
+
 fn main() {
-    let args = args::parse_args();
-    let options = yaml::load_from_file(args.config.as_str());
+    let args: Args = Args::build().unwrap_or_else(|err| {
+        println!("{}", err);
+        process::exit(1);
+    });
+    let options = Config::load_from_file(args.config.as_str()).unwrap_or_else(|err| {
+        println!("Failed on loading yaml file :\n{}", err);
+        process::exit(1);
+    });
 
     logger::init_logger("log/rust.log");
 
