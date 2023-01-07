@@ -1,5 +1,3 @@
-extern crate mysql;
-
 use mysql::*;
 use mysql::prelude::*;
 

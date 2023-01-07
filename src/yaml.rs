@@ -1,5 +1,3 @@
-extern crate yaml_rust;
-
 use std::error::Error;
 use std::fs;
 use yaml_rust::YamlLoader;

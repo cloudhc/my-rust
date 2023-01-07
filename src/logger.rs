@@ -1,6 +1,3 @@
-extern crate log;
-extern crate log4rs;
-
 use log::LevelFilter;
 use log4rs::append::file::FileAppender;
 use log4rs::encode::pattern::PatternEncoder;

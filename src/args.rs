@@ -1,5 +1,3 @@
-extern crate rustop;
-
 use rustop::opts;
 
 pub struct Args {
