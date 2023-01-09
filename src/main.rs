@@ -5,10 +5,10 @@ mod rpc;
 mod yaml;
 
 use std::process;
-use crate::args::Args;
-use crate::yaml::Config;
+use args::Args;
+use yaml::Config;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Args = Args::build().unwrap_or_else(|err| {
         println!("{}", err);
         process::exit(1);
@@ -30,12 +30,15 @@ fn main() {
     println!("listen-port: {:?}", options.rpc_port);
 
     if options.settings_enabled {
-        mydb::load_dbsettings(&options.settings_uri.as_str());
+        if let Err(e) = mydb::load_dbsettings(&options.settings_uri.as_str()) {
+            return Err(e);
+        }
     }
+
     if options.rpc_enabled {
         let server = rpc::new_server(&options.rpc_address, options.rpc_port, options.rpc_allow_cors);
         server.wait();
     }
 
-    log::info!("Hello, rust world!");
+    Ok(())
 }
