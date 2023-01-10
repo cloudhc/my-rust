@@ -1,5 +1,6 @@
 use rustop::opts;
 
+#[derive(Debug)]
 pub struct Args {
     pub config: String,
     pub number: i64
@@ -7,13 +8,11 @@ pub struct Args {
 
 impl Args {
     pub fn build() -> Result<Args, &'static str> {
-        let (args, _) = opts! {
+        let Ok((args, _)) = opts! {
             opt config:Option<String>;
-        }.parse_or_exit();
-
-        if args.config.is_none() {
+        }.parse() else {
             return Err("Usage: xa-rust -c etc/main.yaml");
-        }
+        };
 
         Ok(Args {
             config: args.config.unwrap(),
