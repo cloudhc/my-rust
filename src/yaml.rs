@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use yaml_rust::YamlLoader;
 
+#[derive(Debug)]
 pub struct Config {
     pub debug_level: i64,
     pub prefix_path: String,

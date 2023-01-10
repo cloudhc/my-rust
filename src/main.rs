@@ -4,9 +4,10 @@ mod logger;
 mod rpc;
 mod yaml;
 
-use std::process;
 use args::Args;
 use yaml::Config;
+
+use std::process;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Args = Args::build().unwrap_or_else(|err| {
@@ -20,14 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     logger::init_logger("log/rust.log");
 
-    println!("debug_level: {:?}", options.debug_level);
-    println!("prefix_path: {:?}", options.prefix_path);
-    println!("settings_enabled: {:?}", options.settings_enabled);
-    println!("settings_uri: {:?}", options.settings_uri);
-    println!("enabled: {:?}", options.rpc_enabled);
-    println!("allow-cros: {:?}", options.rpc_allow_cors);
-    println!("listen-address: {:?}", options.rpc_address);
-    println!("listen-port: {:?}", options.rpc_port);
+    println!("config is {:#?}", options);
 
     if options.settings_enabled {
         if let Err(e) = mydb::load_dbsettings(&options.settings_uri.as_str()) {
