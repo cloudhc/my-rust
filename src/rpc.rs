@@ -7,10 +7,8 @@ pub fn new_server(address: &String, port: u16, allow_cors: bool) -> Server {
 		Ok(Value::String("hello".into()))
 	});
 
-    let server = ServerBuilder::new(io)
-            .cors(DomainsValidation::AllowOnly(vec![AccessControlAllowOrigin::Null]))
-            .start_http(&format!("{address}:{port}").parse().unwrap())
-            .expect("Unable to start RPC server");
-
-    return server;
+    ServerBuilder::new(io)
+        .cors(DomainsValidation::AllowOnly(vec![AccessControlAllowOrigin::Null]))
+        .start_http(&format!("{address}:{port}").parse().unwrap())
+        .expect("Unable to execute server.")
 }

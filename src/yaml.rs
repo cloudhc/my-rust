@@ -7,6 +7,8 @@ pub struct Config {
     pub debug_level: i64,
     pub prefix_path: String,
 
+    pub output_log_path: String,
+
     pub settings_enabled: bool,
     pub settings_uri: String,
 
@@ -30,6 +32,8 @@ impl Config {
         Ok(Config {
             debug_level: docs["debug"]["level"].as_i64().unwrap_or(1),
             prefix_path: String::from(docs["paths"]["prefix"].as_str().unwrap_or("/opt/xabyss/css")),
+
+            output_log_path: String::from(docs["output"]["log-path"].as_str().unwrap_or("log/main.log")),
 
             settings_enabled: docs["settings"]["enabled"].as_bool().unwrap_or(false),
             settings_uri: String::from(docs["settings"]["database"].as_str().unwrap()),

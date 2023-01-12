@@ -1,6 +1,6 @@
 mod args;
-mod mydb;
 mod logger;
+mod mydb;
 mod rpc;
 mod yaml;
 
@@ -9,30 +9,30 @@ use yaml::Config;
 
 use std::process;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Args = Args::build().unwrap_or_else(|err| {
-        println!("{}", err);
-        process::exit(1);
-    });
-    let options = Config::load_from_file(args.config.as_str()).unwrap_or_else(|err| {
-        println!("Failed on loading yaml file :\n{}", err);
-        process::exit(1);
-    });
-
-    logger::init_logger("log/rust.log");
-
-    println!("config is {:#?}", options);
+fn init_rsapp() -> Result<(Args, Config, log4rs::Handle), Box<dyn std::error::Error>> {
+    let args: Args = Args::build()?;
+    let options = Config::load_from_file(args.config.as_str())?;
+    let handle = logger::init_logger(&options.output_log_path)?;
 
     if options.settings_enabled {
-        if let Err(e) = mydb::load_dbsettings(&options.settings_uri.as_str()) {
-            return Err(e);
-        }
+        mydb::load_dbsettings(&options.settings_uri.as_str())?;
     }
+
+    Ok((args, options, handle))
+}
+
+fn main() {
+    let (args, options, _logger) = init_rsapp()
+        .unwrap_or_else(|err | {
+        println!("Error is {err}");
+        process::exit(1);
+    });
+
+    println!("Args is {args:#?}");
+    println!("config is {options:#?}");
 
     if options.rpc_enabled {
-        let server = rpc::new_server(&options.rpc_address, options.rpc_port, options.rpc_allow_cors);
+        let server = rpc::new_server(&options.rpc_address, options.rpc_port, options.rpc_allow_cors); 
         server.wait();
     }
-
-    Ok(())
 }

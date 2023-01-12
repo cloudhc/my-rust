@@ -26,6 +26,10 @@ settings:
   enabled: true
   database: mysql://xadmin:netargos12345@127.0.0.1:3306/apca_dev
 
+# Output
+output:
+  log-path: log/rust.log
+
 # RPC for control and search
 control:
   enabled: true

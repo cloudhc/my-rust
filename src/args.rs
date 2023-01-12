@@ -1,5 +1,6 @@
 use rustop::opts;
 
+#[derive(Debug)]
 pub struct Args {
     pub config: String,
     pub number: i64
