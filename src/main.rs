@@ -21,7 +21,7 @@ fn init_rsapp() -> Result<(Args, Config, log4rs::Handle), Box<dyn std::error::Er
     Ok((args, options, handle))
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (args, options, _logger) = init_rsapp()
         .unwrap_or_else(|err | {
         println!("Error is {err}");
@@ -32,7 +32,9 @@ fn main() {
     println!("config is {options:#?}");
 
     if options.rpc_enabled {
-        let server = rpc::new_server(&options.rpc_address, options.rpc_port, options.rpc_allow_cors); 
+        let server = rpc::new_server(&options.rpc_address, options.rpc_port, options.rpc_allow_cors)?;
         server.wait();
     }
+
+    Ok(())
 }
