@@ -1,4 +1,4 @@
-use std::error::Error;
+use anyhow::{Context, Result};
 use std::fs;
 use yaml_rust::YamlLoader;
 
@@ -19,15 +19,15 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load_from_file(path: &str) -> Result<Config, Box<dyn Error>>  {
-        let contents = fs::read_to_string(path)?;
+    pub fn load_from_file(path: &str) -> Result<Config> {
+        let contents = fs::read_to_string(path)
+            .with_context(|| format!("Couldn't find out {path}"))?;
 
-        let root_docs = match YamlLoader::load_from_str(&contents) {
-            Ok(docs) => docs,
-            Err(e) => return Err(Box::new(e)),
-        };
+        let root_docs = YamlLoader::load_from_str(&contents)
+            .context("Failed to laod YAML file")?;
 
-        let docs = &root_docs[0];
+        let docs = root_docs.get(0)
+            .context("Node is null!!!.")?;
 
         Ok(Config {
             debug_level: docs["debug"]["level"].as_i64().unwrap_or(1),

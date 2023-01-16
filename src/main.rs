@@ -4,13 +4,13 @@ mod mydb;
 mod rpc;
 mod yaml;
 
+use anyhow::{Context, Result};
 use args::Args;
 use yaml::Config;
 
-use std::process;
-
-fn init_rsapp() -> Result<(Args, Config, log4rs::Handle), Box<dyn std::error::Error>> {
-    let args: Args = Args::build()?;
+fn init_rsapp() -> Result<(Args, Config, log4rs::Handle)> {
+    let args: Args = Args::build()
+        .context("Usage: xa-rust -c etc/main.yaml")?;
     let options = Config::load_from_file(args.config.as_str())?;
     let handle = logger::init_logger(&options.output_log_path)?;
 
@@ -21,12 +21,8 @@ fn init_rsapp() -> Result<(Args, Config, log4rs::Handle), Box<dyn std::error::Er
     Ok((args, options, handle))
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (args, options, _logger) = init_rsapp()
-        .unwrap_or_else(|err | {
-        println!("Error is {err}");
-        process::exit(1);
-    });
+fn main() -> Result<()> {
+    let (args, options, _logger) = init_rsapp()?;
 
     println!("Args is {args:#?}");
     println!("config is {options:#?}");

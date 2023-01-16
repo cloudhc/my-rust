@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use mysql::*;
 use mysql::prelude::*;
 
@@ -9,9 +10,11 @@ struct Setting {
     port_4: u8,
 }
 
-pub fn load_dbsettings(uri: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
-    let pool = Pool::new(uri)?;
-    let mut conn = pool.get_conn()?;
+pub fn load_dbsettings(uri: &str) -> Result<()> {
+    let pool = Pool::new(uri)
+        .with_context(|| format!("Failed to create connetion pool."))?;
+    let mut conn = pool.get_conn()
+        .context("Failed to connect to database.")?;
 
     let port_list = conn
         .query_map(
@@ -19,9 +22,8 @@ pub fn load_dbsettings(uri: &str) -> std::result::Result<(), Box<dyn std::error:
             |(port_1, port_2, port_3, port_4)| {
                 Setting { port_1, port_2, port_3, port_4 }
             },
-        )?;
-
-    println!("{:?}", port_list);
+        )
+        .context("Failed to execute query")?;
 
     Ok(())
 }

@@ -1,3 +1,4 @@
+use anyhow::Result;
 use rustop::opts;
 
 #[derive(Debug)]
@@ -7,13 +8,13 @@ pub struct Args {
 }
 
 impl Args {
-    pub fn build() -> Result<Args, &'static str> {
+    pub fn build() -> Result<Args> {
         let (args, _) = opts! {
             opt config:Option<String>;
         }.parse_or_exit();
 
         if args.config.is_none() {
-            return Err("Usage: xa-rust -c etc/main.yaml");
+            anyhow::bail!("Failed to parse cli argument.");
         }
 
         Ok(Args {
