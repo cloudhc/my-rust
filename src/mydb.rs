@@ -12,7 +12,7 @@ struct Setting {
 
 pub fn load_dbsettings(uri: &str) -> Result<()> {
     let pool = Pool::new(uri)
-        .with_context(|| format!("Failed to create connetion pool with {uri}."))?;
+        .with_context(|| format!("Failed to create connetion pool from {uri}."))?;
     let mut conn = pool.get_conn()
         .context("Failed to connect to database.")?;
 

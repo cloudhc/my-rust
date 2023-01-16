@@ -21,13 +21,13 @@ pub struct Config {
 impl Config {
     pub fn load_from_file(path: &str) -> Result<Config> {
         let contents = fs::read_to_string(path)
-            .with_context(|| format!("Couldn't find out {path}"))?;
+            .with_context(|| format!("Couldn't find out from {path}"))?;
 
         let root_docs = YamlLoader::load_from_str(&contents)
             .context("Failed to laod YAML file")?;
 
         let docs = root_docs.get(0)
-            .context("Node is null!!!.")?;
+            .context("Node is empty!!!.")?;
 
         Ok(Config {
             debug_level: docs["debug"]["level"].as_i64().unwrap_or(1),
