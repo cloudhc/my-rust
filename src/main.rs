@@ -6,9 +6,20 @@ mod yaml;
 
 use anyhow::{Context, Result};
 use args::Args;
+use signal_hook::{consts::{SIGINT, SIGTERM}, iterator::Signals, low_level};
+use std::thread;
 use yaml::Config;
 
 fn init_rsapp() -> Result<(Args, Config)> {
+    let mut signals = Signals::new(&[SIGINT, SIGTERM])?;
+
+    thread::spawn(move || {
+        for sig in signals.forever() {
+            eprintln!("Received signal {sig:?}");
+            low_level::emulate_default_handler(sig);
+        }
+    });
+
     let args: Args = Args::build().context("Usage: xa-rust -c etc/main.yaml")?;
     let config = Config::load_from_file(args.config.as_str())?;
     let _ = logger::init_logger(&config.output_log_path)?;
