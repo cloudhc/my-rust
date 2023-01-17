@@ -12,9 +12,7 @@ pub fn init_logger(path: &str) -> Result<log4rs::Handle> {
 
     let config = Config::builder()
         .appender(Appender::builder().build("logfile", Box::new(logfile)))
-        .build(Root::builder()
-        .appender("logfile")
-        .build(LevelFilter::Info))
+        .build(Root::builder().appender("logfile").build(LevelFilter::Info))
         .context("Couldn't set up LevelFilter.")?;
 
     let handle = log4rs::init_config(config)
