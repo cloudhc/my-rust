@@ -16,7 +16,9 @@ fn init_rsapp() -> Result<(Args, Config)> {
     thread::spawn(move || {
         for sig in signals.forever() {
             eprintln!("Received signal {sig:?}");
-            low_level::emulate_default_handler(sig);
+            if let Err(e) = low_level::emulate_default_handler(sig) {
+                eprintln!("Failed to handle default emulating with {e}.");
+            }
         }
     });
 
