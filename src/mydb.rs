@@ -20,8 +20,8 @@ pub struct Vulnerability {
     signature_id: String,
     signature: String,
     category: String,
-    timestamp: u32,
-    microsec: u32,
+    timestamp: String,
+    microsec: String,
 }
 
 pub fn load_dbsettings(uri: &str) -> Result<Setting> {
@@ -53,7 +53,7 @@ pub fn fetch_vulnerabilities(uri: &str) -> Result<()> {
 
     let vulnerabilities_list = conn
         .query_map(
-            "SELECT src_ip, src_port, dest_ip, dest_port, proto, signature_id, signature, category, timestamp, microsec FROM inst_cresult LIMIT 1",
+            "SELECT src_ip, src_port, dest_ip, dest_port, proto, signature_id, signature, category, timestamp, microsec FROM inst_cresult",
             |(src_ip, src_port, dest_ip, dest_port, proto, signature_id, signature, category, timestamp, microsec)| Vulnerability {
                 src_ip,
                 src_port,
