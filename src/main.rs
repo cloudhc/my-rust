@@ -43,6 +43,8 @@ fn main() -> Result<()> {
         let setting = mydb::load_dbsettings(&config.settings_uri.as_str())?;
 
         log::info!("ports : {:?}", setting);
+
+        mydb::fetch_vulnerabilities(&config.settings_uri.as_str())?;
     }
 
     log::info!("running completely.");
