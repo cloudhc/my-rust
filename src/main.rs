@@ -6,7 +6,11 @@ mod yaml;
 
 use anyhow::{Context, Result};
 use args::Args;
-use signal_hook::{consts::{SIGINT, SIGTERM}, iterator::Signals, low_level};
+use signal_hook::{
+    consts::{SIGINT, SIGTERM},
+    iterator::Signals,
+    low_level,
+};
 use std::thread;
 use yaml::Config;
 
@@ -36,7 +40,9 @@ fn main() -> Result<()> {
     println!("Config is {config:#?}");
 
     if config.settings_enabled {
-        mydb::load_dbsettings(&config.settings_uri.as_str())?;
+        let setting = mydb::load_dbsettings(&config.settings_uri.as_str())?;
+
+        log::info!("ports : {:?}", setting);
     }
 
     log::info!("running completely.");
